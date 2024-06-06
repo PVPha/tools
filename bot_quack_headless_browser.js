@@ -1,7 +1,7 @@
 const axios = require('axios')
 const querystring = require('querystring')
 const { promise } = require('selenium-webdriver')
-const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgzNDY4LCJ0aW1lc3RhbXAiOjE3MTY5MDkxNjA3ODgsInR5cGUiOjEsImlhdCI6MTcxNjkwOTE2MCwiZXhwIjoxNzE3NTEzOTYwfQ.6rj61zescfHlTCheSGcADSRUWD8zLlRJItD6Z9B-NmY'
+const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgzNDY4LCJ0aW1lc3RhbXAiOjE3MTc1NjU0NTgwMjQsInR5cGUiOjEsImlhdCI6MTcxNzU2NTQ1OCwiZXhwIjoxNzE4MTcwMjU4fQ.rMouOVismmDNzkcsqfeK1CIBJmpKs0FX14iLFC5759A'
 const axiosClient = axios.create({
     baseURL: 'https://api.quackquack.games',
     headers: {
@@ -19,6 +19,11 @@ const egg_type = {
     4:"uncommon",
     5:"rare",
     6:"ultra_rare"
+}
+const duck_type = {
+    "uncommon": 4,
+    "rare": 5,
+    "legendary": 6
 }
 const egg_shell = {
     common: [1,2],
@@ -44,7 +49,7 @@ function getUserInfo() {
         // console.log(res.data.data);
         console.log(`Số trứng đang có: ${res.data?.data?.data?.[2]?.balance}`);
     }).catch((error) => {
-        console.log(`Lỗi lấy thông tin user ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+        console.log(`Lỗi lấy thông tin user ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
     }).finally(() => {
         main()
     });
@@ -112,7 +117,7 @@ function removeDuck() {
             return resolve(res.data.data)
             // console.log(res.data.data);
         }).catch((error) => {
-            console.log('\x1b[31m%s\x1b[0m', `Xoá vịt thất bại ${ducks}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+            console.log('\x1b[31m%s\x1b[0m', `Xoá vịt thất bại ${ducks}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
             setTimeout(() => {
                 removeDuck(ducks)
             }, 1000);
@@ -141,7 +146,7 @@ function getAllInfo() {
             return res.data?.data
         }
     }).catch((error) => {
-        console.log(`Lỗi lấy thông tin người dùng ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+        console.log(`Lỗi lấy thông tin người dùng ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
     });
 };
 
@@ -154,7 +159,7 @@ function reloadList() {
             return res.data?.data
         }
     }).catch((error) => {
-        console.log(`Reload list thất bại: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '') }`);
+        console.log(`Reload list thất bại: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '') }`);
     });
 };
 
@@ -166,7 +171,7 @@ function getPriceGoldenDuck(delay) {
             console.log('\x1b[33m%s\x1b[0m',`Loại phần thưởng vịt vàng: ${price_golden_duck} - ${price_type[price_golden_duck] || 'chưa xác định'}`);
             golden_price = price_golden_duck
         }).catch((error) => {
-            console.log('\x1b[33m%s\x1b[0m', `Lấy loại phần thưởng vịt vàng thất bại: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+            console.log('\x1b[33m%s\x1b[0m', `Lấy loại phần thưởng vịt vàng thất bại: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
         }); 
     }, delay);
 };
@@ -187,7 +192,7 @@ function claimGoldenDuck() {
         check_gold_duck = false
     }).catch((error) => {
         check_gold_duck = false
-        console.log('\x1b[33m%s\x1b[0m', `Nhận thưởng vịt vàng thất bại type{${type}}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+        console.log('\x1b[33m%s\x1b[0m', `Nhận thưởng vịt vàng thất bại type{${type}}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
     });
 };
 
@@ -200,7 +205,7 @@ function getRewardGoldenDuck(delay) {
             claimGoldenDuck()
         }).catch((error) => {
             check_gold_duck = false
-            console.log('\x1b[33m%s\x1b[0m', `Đập vịt vàng thất bại: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+            console.log('\x1b[33m%s\x1b[0m', `Đập vịt vàng thất bại: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
         });
     }, delay);
 };
@@ -214,7 +219,7 @@ function getGoldenDuckInfo() {
         console.log('\x1b[33m%s\x1b[0m', `Vịt vàng: ${JSON.stringify(golden_duck)}`);
         getRewardGoldenDuck(time_to_golden_duck)
     }).catch((error) => {
-        console.log('\x1b[33m%s\x1b[0m', `Lỗi lấy thông tin vịt vàng: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+        console.log('\x1b[33m%s\x1b[0m', `Lỗi lấy thông tin vịt vàng: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
         getGoldenDuckInfo()
     });
 };
@@ -231,7 +236,7 @@ function harvest(nest_id, delay_harvest) {
             return res.data
             // console.log(res.data.data);
         }).catch((error) => {
-            console.log(`Lỗi thu hoạch trứng ổ ${nest_id}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '') }`);
+            console.log(`Lỗi thu hoạch trứng ổ ${nest_id}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '') }`);
         });
     }, delay_harvest);
 };
@@ -250,7 +255,7 @@ async function layEgg(nest_id, duck_id, delay) {
             // console.log(res.data.data);
             if (![common_egg].includes(egg_info?.total_rare)) {
                 const list_duck = list?.duck
-                console.log('\x1b[32m%s\x1b[0m', `Ấp trứng loại ${egg_type[egg_info?.total_rare] || 'chưa xác định'}: `, nest_id);
+                console.log('\x1b[34m%s\x1b[0m', `Ấp trứng loại ${egg_type[egg_info?.total_rare] || 'chưa xác định'}: `, nest_id);
                 if (list_duck?.length === max_duck) {
                     removeDuck().finally(() => {
                         hatchEgg(nest_id, delay)
@@ -274,15 +279,15 @@ function hatchEgg(nest_id, delay) {
             }
         }).then(res => {
             const hatch_info = res.data.data
-            console.log('\x1b[32m%s\x1b[0m', `Ấp trứng thành công ${nest_id} ${JSON.stringify(hatch_info)}`);
+            console.log('\x1b[34m%s\x1b[0m', `Ấp trứng thành công ${nest_id} ${JSON.stringify(hatch_info)}`);
             collectDuck(nest_id, hatch_info?.time_remain * 1000)
         }).catch(async(error) => {
-            console.log('\x1b[32m%s\x1b[0m', `Ấp trứng thất bại ${nest_id} ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
-            if (error.response.data?.error_code === 'REACH_MAX_NUMBER_OF_DUCK') {
-                console.log('\x1b[32m%s\x1b[0m', `Số vịt đạt tối đa`);
+            console.log('\x1b[34m%s\x1b[0m', `Ấp trứng thất bại ${nest_id} ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
+            if (error?.response?.data?.error_code === 'REACH_MAX_NUMBER_OF_DUCK') {
+                console.log('\x1b[34m%s\x1b[0m', `Số vịt đạt tối đa`);
                 await reloadList()
                 removeDuck().finally(() => {
-                    console.log('\x1b[32m%s\x1b[0m', `Ấp lại trứng ổ: ${nest_id}`);
+                    console.log('\x1b[34m%s\x1b[0m', `Ấp lại trứng ổ: ${nest_id}`);
                     hatchEgg(nest_id, delay)
                 })
             }
@@ -298,13 +303,21 @@ function collectDuck(nest_id, delay) {
                 "content-type": "application/x-www-form-urlencoded"
             }
         }).then(res => {
-            console.log('\x1b[32m%s\x1b[0m', `Lấy vịt thành công ${nest_id}: ${JSON.stringify(res.data.data)}`);
+            console.log('\x1b[34m%s\x1b[0m', `Lấy vịt thành công ${nest_id}: ${JSON.stringify(res.data.data)}`);
         }).catch((error) => {
-            console.log('\x1b[32m%s\x1b[0m', `Lấy vịt thất bại ${nest_id}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error.response.status) ? error.response.data : '')}`);
+            console.log('\x1b[34m%s\x1b[0m', `Lấy vịt thất bại ${nest_id}: ${JSON.stringify(![404, 502, 503, 504]?.includes(error?.response?.status) ? error?.response?.data : '')}`);
         });
     }, delay);
 };
-
+function countDuckType() {
+    const list_duck = list?.duck
+    const uncommon = 0
+    const rare = 0
+    const legendary = 0
+    list_duck?.forEach(duck => {
+        
+    });
+}
 async function main() {
     await reloadList()
     const list_nest = list?.nest
@@ -341,7 +354,6 @@ async function main() {
     }, [])
     // console.log(`Thông tin các ổ trứng: ${JSON.stringify(list_nest)}`);
     console.log(`Số ổ cần thu hoạch ${list_harvest?.length} \tSố ổ trống ${list_empty_nest?.length} \tSố ổ trứng nở ${list_hatch_nest?.length}`);
-    
     await list_nest?.forEach((nest, index) => {
         if (nest?.status === hatch_nest) {
             console.log('Lấy vịt ổ:', nest?.id);
@@ -358,7 +370,7 @@ async function main() {
                 delay = delay + index * 1000
                 harvest(nest?.id, delay)
             }else {
-                console.log('\x1b[32m%s\x1b[0m', 'Ấp trứng ổ:', nest?.id);
+                console.log('\x1b[34m%s\x1b[0m', 'Ấp trứng ổ:', nest?.id);
                 delay = delay + index * 1000
                 if (list_duck?.length === max_duck) {
                     removeDuck().finally(() => {
