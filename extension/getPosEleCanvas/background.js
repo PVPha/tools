@@ -3,8 +3,36 @@ let enabledTabs = {};
 
 chrome.runtime.onInstalled.addListener(() => {
     // Initialize the extension state
-    chrome.storage.sync.set({ extensionEnabled: false, enabledTabs: {} });
+    chrome.storage.sync.set({ enabledTabs: {} });
 });
+chrome.action.onClicked.addListener(async (tab) => {
+    let storage = await chrome.storage.sync.get(['enabledTabs']);
+    let tabId = tab?.id
+    let isEnabled = !storage?.enabledTabs?.[tabId]
+    const action = isEnabled ? 'inject' : 'remove';
+    chrome.storage.sync.set({ extensionEnabled: isEnabled, enabledTabs: { [tabId]: isEnabled } });
+    chrome.scripting.executeScript(
+        {
+            target: { tabId: tabId },
+            files: ['content.js']
+        },
+        () => {
+            if (chrome.runtime.lastError) {
+                console.error(chrome.runtime.lastError);
+            } else {
+                // Send the message to the content script
+                chrome.tabs.sendMessage(tabId, { action: action }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        // console.error(chrome.runtime.lastError);
+                    }
+                });
+                // updateIcon(tab.id, !!enabledTabs[tab.id]);
+                updateIcon(tabId, isEnabled);
+            }
+        }
+    );
+    console.log(`Extension is now ${isEnabled ? 'enabled' : 'disabled'}`);
+})
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.extensionEnabled !== undefined) {
         // Handle the state change
@@ -15,30 +43,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             // console.log('tabs', tabs[0].id, isEnabled);
             if (tabs.length > 0) {
                 const tabId = tabs[0].id;
-                const action = isEnabled ? 'inject' : 'remove';
                 //save tab is enabled extension
                 chrome.storage.sync.set({ enabledTabs: { [tabId]: isEnabled } });
                 // Inject the content script if not already injected
-                chrome.scripting.executeScript(
-                    {
-                        target: { tabId: tabId },
-                        files: ['content.js']
-                    },
-                    () => {
-                        if (chrome.runtime.lastError) {
-                            console.error(chrome.runtime.lastError);
-                        } else {
-                            // Send the message to the content script
-                            chrome.tabs.sendMessage(tabId, { action: action }, (response) => {
-                                if (chrome.runtime.lastError) {
-                                    // console.error(chrome.runtime.lastError);
-                                }
-                            });
-                            // updateIcon(tab.id, !!enabledTabs[tab.id]);
-                            updateIcon(tabId, isEnabled);
-                        }
-                    }
-                );
+                updateIcon(tabId, isEnabled);
             }
         });
 

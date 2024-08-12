@@ -10,7 +10,6 @@
     ],
     "action": {
         "default_title": "click me to get position of canvas",
-        "default_popup": "popup.html",
         "default_icon": {
             "16": "images/icon16.png",
             "48": "images/icon48.png",
