@@ -1,0 +1,17 @@
+{
+  "name": "autoreg",
+  "version": "1.0.0",
+  "description": "automation for register account",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "phaphamv",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^23.5.3",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-adblocker": "^2.13.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
