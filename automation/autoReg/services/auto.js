@@ -6,6 +6,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 
 module.exports = class auto {
     browser;
+    page;
     URL = "https://www.google.com";
     name = '';
     global = '';
@@ -26,6 +27,7 @@ module.exports = class auto {
         puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
         const browser = await puppeteer.launch({ headless: false }).then(async browser => {
             this.browser = browser;
+            this.page = await this.browser.newPage()
             this.start();
         })
     }
